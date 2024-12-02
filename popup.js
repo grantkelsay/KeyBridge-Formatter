@@ -212,64 +212,63 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (step) {
                     javaCode += '    {\n';
                     javaCode += '        xml.put("step"); // Add a step element to the XML.\n';
-    
+
                     const records = step.getElementsByTagNameNS('http://www.corelationinc.com/queryLanguage/v1.0', 'record');
 
-                    Array.from(records).forEach(record => {
-                        javaCode += '        {\n';
-                        javaCode += '            xml.put("record"); // Add a record element to the XML.\n';
-    
-                        const operation = record.getElementsByTagNameNS('http://www.corelationinc.com/queryLanguage/v1.0', 'operation')[0];
-                        if (operation) {
-                            javaCode += '            {\n';
-                            javaCode += `                xml.putOption("operation", "${operation.getAttribute('option')}"); // This is an "${operation.getAttribute('option')}" operation.\n`;
-                        }
-    
-                        const includeRowDescriptions = record.getElementsByTagNameNS('http://www.corelationinc.com/queryLanguage/v1.0', 'includeRowDescriptions')[0];
-                        if (includeRowDescriptions) {
-                            javaCode += `                xml.putOption("includeRowDescriptions", "${includeRowDescriptions.getAttribute('option')}");\n`;
-                        }
-    
-                        const tableName = record.getElementsByTagNameNS('http://www.corelationinc.com/queryLanguage/v1.0', 'tableName')[0];
-                        if (tableName) {
-                            javaCode += `                xml.put("tableName", "${tableName.textContent}");\n`;
-                        }
-    
-                        const targetSerial = record.getElementsByTagNameNS('http://www.corelationinc.com/queryLanguage/v1.0', 'targetSerial')[0];
-                        if (targetSerial) {
-                            javaCode += `                xml.put("targetSerial", "${targetSerial.textContent}");\n`;
-                        }
-    
-                        const fields = record.getElementsByTagNameNS('http://www.corelationinc.com/queryLanguage/v1.0', 'field');
-                        Array.from(fields).forEach(field => {
-                            javaCode += '                xml.put("field"); // Add a field element to the XML.\n';
-    
-                            const columnName = field.getElementsByTagNameNS('http://www.corelationinc.com/queryLanguage/v1.0', 'columnName')[0];
-                            if (columnName) {
-                                javaCode += '                {\n';
-                                javaCode += `                    xml.put("columnName", "${columnName.textContent}");\n`;
+                    if (records.length > 0) {
+                        Array.from(records).forEach(record => {
+                            javaCode += '        {\n';
+                            javaCode += '            xml.put("record"); // Add a record element to the XML.\n';
+        
+                            const operation = record.getElementsByTagNameNS('http://www.corelationinc.com/queryLanguage/v1.0', 'operation')[0];
+                            if (operation) {
+                                javaCode += '            {\n';
+                                javaCode += `                xml.putOption("operation", "${operation.getAttribute('option')}"); // This is an "${operation.getAttribute('option')}" operation.\n`;
                             }
-    
-                            const fieldOperation = field.getElementsByTagNameNS('http://www.corelationinc.com/queryLanguage/v1.0', 'operation')[0];
-                            if (fieldOperation) {
-                                javaCode += `                    xml.putOption("operation", "${fieldOperation.getAttribute('option')}");\n`;
+        
+                            const includeRowDescriptions = record.getElementsByTagNameNS('http://www.corelationinc.com/queryLanguage/v1.0', 'includeRowDescriptions')[0];
+                            if (includeRowDescriptions) {
+                                javaCode += `                xml.putOption("includeRowDescriptions", "${includeRowDescriptions.getAttribute('option')}");\n`;
                             }
-    
-                            const newContents = field.getElementsByTagNameNS('http://www.corelationinc.com/queryLanguage/v1.0', 'newContents')[0];
-                            if (newContents) {
-                                javaCode += `                    xml.put("newContents", "${newContents.textContent}");\n`;
+        
+                            const tableName = record.getElementsByTagNameNS('http://www.corelationinc.com/queryLanguage/v1.0', 'tableName')[0];
+                            if (tableName) {
+                                javaCode += `                xml.put("tableName", "${tableName.textContent}");\n`;
                             }
-    
-                            javaCode += '                }\n';
-                            javaCode += '                xml.put(); // Close the field element.\n';
+        
+                            const targetSerial = record.getElementsByTagNameNS('http://www.corelationinc.com/queryLanguage/v1.0', 'targetSerial')[0];
+                            if (targetSerial) {
+                                javaCode += `                xml.put("targetSerial", "${targetSerial.textContent}");\n`;
+                            }
+        
+                            const fields = record.getElementsByTagNameNS('http://www.corelationinc.com/queryLanguage/v1.0', 'field');
+                            Array.from(fields).forEach(field => {
+                                javaCode += '                xml.put("field"); // Add a field element to the XML.\n';
+        
+                                const columnName = field.getElementsByTagNameNS('http://www.corelationinc.com/queryLanguage/v1.0', 'columnName')[0];
+                                if (columnName) {
+                                    javaCode += '                {\n';
+                                    javaCode += `                    xml.put("columnName", "${columnName.textContent}");\n`;
+                                }
+        
+                                const fieldOperation = field.getElementsByTagNameNS('http://www.corelationinc.com/queryLanguage/v1.0', 'operation')[0];
+                                if (fieldOperation) {
+                                    javaCode += `                    xml.putOption("operation", "${fieldOperation.getAttribute('option')}");\n`;
+                                }
+        
+                                const newContents = field.getElementsByTagNameNS('http://www.corelationinc.com/queryLanguage/v1.0', 'newContents')[0];
+                                if (newContents) {
+                                    javaCode += `                    xml.put("newContents", "${newContents.textContent}");\n`;
+                                }
+        
+                                javaCode += '                }\n';
+                                javaCode += '                xml.put(); // Close the field element.\n';
+                            });
+        
+                            javaCode += '            }\n';
+                            javaCode += '            xml.put(); // Close the record element.\n';
                         });
-    
-                        javaCode += '            }\n';
-                        javaCode += '            xml.put(); // Close the record element.\n';
-                    });
-    
-                    javaCode += '        }\n';
-                    javaCode += '        xml.put(); // Close the step element.\n';
+                    }
                 }
     
                 javaCode += '    }\n';
